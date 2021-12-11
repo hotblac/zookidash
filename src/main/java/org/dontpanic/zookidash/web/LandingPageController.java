@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class LandingPageController {
 
-    private static final String CONNECTION_STRING_FORM_ATTRIBUTE = "connectionStringForm";
-
     private final ZooKeeperClient zk;
 
     public LandingPageController(ZooKeeperClient zk) {
@@ -20,13 +18,15 @@ public class LandingPageController {
 
     @GetMapping("/")
     public String start(Model model) {
-        model.addAttribute(CONNECTION_STRING_FORM_ATTRIBUTE, new ConnectionStringForm());
+        model.addAttribute("connectionStringForm", new ConnectionStringForm());
         return "index";
     }
 
     @PostMapping("/")
-    public String landingPage(@ModelAttribute(CONNECTION_STRING_FORM_ATTRIBUTE) ConnectionStringForm connectionStringForm) throws Exception {
+    public String landingPage(Model model, @ModelAttribute ConnectionStringForm connectionStringForm) throws Exception {
         zk.connect(connectionStringForm.getConnectionString()); // TODO: validate
+        // TODO exception check
+        model.addAttribute("isConnected", true);
         return "index";
     }
 
