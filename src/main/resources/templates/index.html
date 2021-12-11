@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html>
+<html xmlns:th="https://www.thymeleaf.org">
 <head>
     <title>Zookidash</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -15,25 +15,27 @@
     <div class="modal is-active">
         <div class="modal-background"> </div>
         <div class="modal-card">
-            <header class="modal-card-head">
-                <p class="modal-card-title">Connect</p>
-            </header>
-            <section class="modal-card-body">
-                <div class="field is-horizontal">
-                    <label class="field-label">Connection string</label>
-                    <div class="field-body">
-                        <div class="field is-expanded">
-                            <div class="control">
-                                <input name="conectionString" type="text"
-                                       class="input" placeholder="localhost:2181"/>
+            <form method="POST" th:action="@{/}" th:object="${connectionStringForm}">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">Connect</p>
+                </header>
+                <section class="modal-card-body">
+                    <div class="field is-horizontal">
+                        <label class="field-label">Connection string</label>
+                        <div class="field-body">
+                            <div class="field is-expanded">
+                                <div class="control">
+                                    <input th:field="*{connectionString}" type="text"
+                                           class="input" placeholder="localhost:2181"/>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </section>
-            <footer class="modal-card-foot">
-                <button class="button is-success">Login</button>
-            </footer>
+                </section>
+                <footer class="modal-card-foot">
+                    <input type="submit" class="button is-success" value="Connect"/>
+                </footer>
+            </form>
         </div>
     </div>
     <footer class="footer has-text-centered is-dark">
