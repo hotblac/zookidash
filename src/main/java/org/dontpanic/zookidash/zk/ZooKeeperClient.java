@@ -1,7 +1,9 @@
 package org.dontpanic.zookidash.zk;
 
+import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -26,6 +28,14 @@ public class ZooKeeperClient {
         connectedSignal.await();
         log.debug("Zookeeper: connected");
         return zoo;
+    }
+
+    public void getConfig(ZooKeeper zoo) throws InterruptedException, KeeperException {
+        byte[] configData = zoo.getConfig(false, new Stat());
+        String config = new String(configData);
+        log.debug("config: " + config);
+
+        // Parse the config
     }
 
 }
