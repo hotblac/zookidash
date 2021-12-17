@@ -12,7 +12,18 @@
             <h2 class="subtitle">Zookeeper dashboard</h2>
         </div>
     </section>
-
+    <section class="section has-background-light">
+        <div class="container has-text-centered">
+            <div class="columns is-centered is-multiline is-mobile">
+                <article th:each="peer: ${peers}" class="column is-narrow message is-primary">
+                    <div class="message-header">
+                        <p th:text="${peer.peerHost} + ':' + ${peer.clientPort}"></p>
+                    </div>
+                    <div class="message-body" th:text="${#strings.toLowerCase(peer.learnerType)}"></div>
+                </article>
+            </div>
+        </div>
+    </section>
     <footer class="footer has-text-centered is-dark">
         <div class="content">
             <p><a href="https://github.com/hotblac/zookidash">Zookidash @ Github</a></p>
