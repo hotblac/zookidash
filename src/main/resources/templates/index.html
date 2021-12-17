@@ -12,7 +12,7 @@
             <h2 class="subtitle">Zookeeper dashboard</h2>
         </div>
     </section>
-    <div class="modal" th:classappend="${isConnected} ? '' : is-active">
+    <div class="modal is-active">
         <div class="modal-background"> </div>
         <div class="modal-card">
             <form method="POST" th:action="@{/}" th:object="${connectionStringForm}">

@@ -35,7 +35,6 @@ class LandingPageControllerTest {
 
         assertEquals("index", view);
         assertThat(model.get("connectionStringForm"), isA(ConnectionStringForm.class));
-        assertNull(model.get("isConnected"));
     }
 
     @Test
@@ -48,9 +47,7 @@ class LandingPageControllerTest {
         ExtendedModelMap model = new ExtendedModelMap();
         String view = controller.landingPage(model, form);
 
-        assertEquals("index", view);
-        assertTrue((Boolean)model.get("isConnected"));
-        List<Peer> peers = (List<Peer>) model.get("peers");
-        assertThat(peers, contains(PEER_1, PEER_2));
+        assertEquals("peers", view);
+        assertThat((List<Peer>) model.get("peers"), contains(PEER_1, PEER_2));
     }
 }

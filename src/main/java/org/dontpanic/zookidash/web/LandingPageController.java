@@ -37,9 +37,8 @@ public class LandingPageController {
         List<Peer> peers = zk.getConfig(conn);
         log.debug("***SL peers: {}", peers);
 
-        model.addAttribute("isConnected", true);
         model.addAttribute("peers", peers);
-        return "index";
+        return "peers";
     }
 
 }
