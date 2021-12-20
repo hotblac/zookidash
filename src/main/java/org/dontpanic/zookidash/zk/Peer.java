@@ -1,8 +1,9 @@
 package org.dontpanic.zookidash.zk;
 
 import lombok.Builder;
+import lombok.Setter;
 import lombok.Value;
-import org.apache.commons.lang3.StringUtils;
+import lombok.experimental.NonFinal;
 
 @Value
 @Builder
@@ -14,10 +15,20 @@ public class Peer {
     LearnerType learnerType;
     String clientHost;
     int clientPort;
+    @Setter
+    @NonFinal
+    @Builder.Default
+    Status status = Status.UNKNOWN;
 
     enum LearnerType {
         PARTICIPANT,
         OBSERVER
+    }
+
+    enum Status {
+        OK,
+        UNREACHABLE,
+        UNKNOWN
     }
 
 }

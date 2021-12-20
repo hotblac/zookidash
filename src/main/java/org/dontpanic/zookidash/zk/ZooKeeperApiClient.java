@@ -13,15 +13,15 @@ import java.util.concurrent.CountDownLatch;
 
 @Component
 @Slf4j
-public class ZooKeeperClient {
+public class ZooKeeperApiClient {
 
     private final ConfigStringParser configStringParser;
 
-    public ZooKeeperClient(ConfigStringParser configStringParser) {
+    ZooKeeperApiClient(ConfigStringParser configStringParser) {
         this.configStringParser = configStringParser;
     }
 
-    public ZooKeeper connect(String connectString) throws IOException, InterruptedException {
+    ZooKeeper connect(String connectString) throws IOException, InterruptedException {
         CountDownLatch connectedSignal = new CountDownLatch(1);
         log.debug("Zookeeper: attempting connection to {}", connectString);
         ZooKeeper zoo = new ZooKeeper(connectString,5000, we -> {
@@ -35,7 +35,7 @@ public class ZooKeeperClient {
         return zoo;
     }
 
-    public List<Peer> getConfig(ZooKeeper zoo) throws InterruptedException, KeeperException {
+    List<Peer> getConfig(ZooKeeper zoo) throws InterruptedException, KeeperException {
         byte[] configData = zoo.getConfig(false, new Stat());
         String config = new String(configData);
         log.debug("config: " + config);

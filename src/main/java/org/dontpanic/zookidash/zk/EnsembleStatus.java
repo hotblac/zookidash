@@ -10,16 +10,23 @@ import java.util.List;
 @Component
 public class EnsembleStatus {
 
-    private final ZooKeeperClient zk;
+    private final ZooKeeperApiClient zkApi;
+    private final Zookeeper4lwClient zk4lw;
 
-    public EnsembleStatus(ZooKeeperClient zk) {
-        this.zk = zk;
+    public EnsembleStatus(ZooKeeperApiClient zkApi, Zookeeper4lwClient zk4lw) {
+        this.zkApi = zkApi;
+        this.zk4lw = zk4lw;
     }
 
     public List<Peer> checkStatus(String connectionString) throws IOException, InterruptedException, KeeperException {
-        ZooKeeper conn = zk.connect(connectionString);
+        ZooKeeper conn = zkApi.connect(connectionString);
         // TODO exception check
 
-        return zk.getConfig(conn);
+        List<Peer> peers = zkApi.getConfig(conn);
+        for (Peer peer : peers) {
+            boolean ok = zk4lw.ruok(peer.getPeerHost(), peer.getClientPort());
+            peer.setStatus(ok ? Peer.Status.OK : Peer.Status.UNREACHABLE);
+        }
+        return peers;
     }
 }
