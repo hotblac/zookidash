@@ -1,8 +1,7 @@
 package org.dontpanic.zookidash.web;
 
-import org.apache.zookeeper.ZooKeeper;
 import org.dontpanic.zookidash.zk.Peer;
-import org.dontpanic.zookidash.zk.ZooKeeperClient;
+import org.dontpanic.zookidash.zk.EnsembleStatus;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,8 +23,7 @@ class LandingPageControllerTest {
     private static final Peer PEER_1 = Peer.builder().id(1).build();
     private static final Peer PEER_2 = Peer.builder().id(2).build();
 
-    @Mock private ZooKeeperClient zk;
-    @Mock private ZooKeeper conn;
+    @Mock private EnsembleStatus ensembleStatus;
     @InjectMocks private LandingPageController controller;
 
     @Test
@@ -41,8 +39,7 @@ class LandingPageControllerTest {
     void landingPage_showsPeers() throws Exception {
         ConnectionStringForm form = new ConnectionStringForm();
         form.setConnectionString("example.com:2181");
-        when(zk.connect("example.com:2181")).thenReturn(conn);
-        when(zk.getConfig(conn)).thenReturn(List.of(PEER_1, PEER_2));
+        when(ensembleStatus.checkStatus("example.com:2181")).thenReturn(List.of(PEER_1, PEER_2));
 
         ExtendedModelMap model = new ExtendedModelMap();
         String view = controller.landingPage(model, form);

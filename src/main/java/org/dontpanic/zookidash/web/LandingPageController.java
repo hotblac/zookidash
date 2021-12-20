@@ -1,9 +1,8 @@
 package org.dontpanic.zookidash.web;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.zookeeper.ZooKeeper;
 import org.dontpanic.zookidash.zk.Peer;
-import org.dontpanic.zookidash.zk.ZooKeeperClient;
+import org.dontpanic.zookidash.zk.EnsembleStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,10 +15,10 @@ import java.util.List;
 @Slf4j
 public class LandingPageController {
 
-    private final ZooKeeperClient zk;
+    private final EnsembleStatus ensembleStatus;
 
-    public LandingPageController(ZooKeeperClient zk) {
-        this.zk = zk;
+    public LandingPageController(EnsembleStatus ensembleStatus) {
+        this.ensembleStatus = ensembleStatus;
     }
 
     @GetMapping("/")
@@ -30,11 +29,7 @@ public class LandingPageController {
 
     @PostMapping("/")
     public String landingPage(Model model, @ModelAttribute ConnectionStringForm connectionStringForm) throws Exception {
-        // TODO: store conn in the session
-        ZooKeeper conn = zk.connect(connectionStringForm.getConnectionString()); // TODO: validate
-        // TODO exception check
-
-        List<Peer> peers = zk.getConfig(conn);
+        List<Peer> peers = ensembleStatus.checkStatus(connectionStringForm.getConnectionString()); // TODO: validate
         log.debug("***SL peers: {}", peers);
 
         model.addAttribute("peers", peers);
