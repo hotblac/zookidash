@@ -19,7 +19,10 @@
                     <div class="message-header">
                         <p th:text="${peer.peerHost} + ':' + ${peer.clientPort}"></p>
                     </div>
-                    <div class="message-body" th:text="${#strings.toLowerCase(peer.learnerType)}"></div>
+                    <div class="message-body">
+                        <span class="tag" th:text="${#strings.toLowerCase(peer.learnerType)}"></span><br/>
+                        <span class="tag" th:text="${#strings.toLowerCase(peer.status)}"></span>
+                    </div>
                 </article>
             </div>
         </div>
