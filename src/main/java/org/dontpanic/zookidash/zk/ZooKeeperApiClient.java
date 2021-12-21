@@ -13,7 +13,7 @@ import java.util.concurrent.CountDownLatch;
 
 @Component
 @Slf4j
-public class ZooKeeperApiClient {
+class ZooKeeperApiClient {
 
     private final ConfigStringParser configStringParser;
 

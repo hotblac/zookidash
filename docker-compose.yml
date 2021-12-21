@@ -5,6 +5,8 @@ services:
     image: openjdk:11
     ports:
       - 8080:8080
+    environment:
+      - logging.level.org.dontpanic.zookidash=DEBUG
     volumes:
       - ./target/:/app
     entrypoint: java -jar /app/zookidash.jar

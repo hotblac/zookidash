@@ -39,8 +39,8 @@ class EnsembleStatusTest {
     void checkStatus_returnsPeerStatus() throws Exception {
         when(zkApi.connect(CONNECT_STRING)).thenReturn(conn);
         when(zkApi.getConfig(conn)).thenReturn(List.of(PEER_1, PEER_2));
-        when(zk4lw.ruok("host1", 2181)).thenReturn(true);
-        when(zk4lw.ruok("host2", 2181)).thenReturn(false);
+        when(zk4lw.ruok("host1", 2181)).thenReturn(Peer.Status.OK);
+        when(zk4lw.ruok("host2", 2181)).thenReturn(Peer.Status.UNREACHABLE);
 
         List<Peer> peerConfig = ensembleStatus.checkStatus(CONNECT_STRING);
 

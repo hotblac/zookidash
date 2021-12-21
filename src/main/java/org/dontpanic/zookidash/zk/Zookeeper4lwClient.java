@@ -1,6 +1,7 @@
 package org.dontpanic.zookidash.zk;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -11,13 +12,15 @@ import java.net.Socket;
 
 @Component
 @Slf4j
-public class Zookeeper4lwClient {
+class Zookeeper4lwClient {
 
-    boolean ruok(String host, int port) {
+    Peer.Status ruok(String host, int port) {
 
         try (Socket socket = new Socket(host, port);
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))){
+
+            log.debug("{}:{} ruok", host, port);
 
             // Issue RUOK command
             out.println("ruok");
@@ -25,11 +28,19 @@ public class Zookeeper4lwClient {
             // Wait for response
             // TODO: Fail on timeout
             String response = in.readLine();
-            return "imok".equals(response);
+            log.debug("{}:{} ruok response: {}", host, port, response);
+
+            if ("imok".equals(response)) {
+                return Peer.Status.OK;
+            } else if (StringUtils.contains(response, "not in the whitelist")) {
+                return Peer.Status.QUERY_REFUSED;
+            } else {
+                return Peer.Status.UNKNOWN;
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
+            return Peer.Status.UNREACHABLE;
         }
     }
 

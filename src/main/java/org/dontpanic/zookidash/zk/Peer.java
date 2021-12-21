@@ -28,6 +28,7 @@ public class Peer {
     enum Status {
         OK,
         UNREACHABLE,
+        QUERY_REFUSED,
         UNKNOWN
     }
 

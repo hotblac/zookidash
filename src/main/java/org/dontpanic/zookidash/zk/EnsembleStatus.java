@@ -24,8 +24,8 @@ public class EnsembleStatus {
 
         List<Peer> peers = zkApi.getConfig(conn);
         for (Peer peer : peers) {
-            boolean ok = zk4lw.ruok(peer.getPeerHost(), peer.getClientPort());
-            peer.setStatus(ok ? Peer.Status.OK : Peer.Status.UNREACHABLE);
+            Peer.Status status = zk4lw.ruok(peer.getPeerHost(), peer.getClientPort());
+            peer.setStatus(status);
         }
         return peers;
     }
