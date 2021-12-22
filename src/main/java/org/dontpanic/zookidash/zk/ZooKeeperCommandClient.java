@@ -2,13 +2,15 @@ package org.dontpanic.zookidash.zk;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @Component
+@Profile("!4lw")
 @Slf4j
-class ZooKeeperCommandClient {
+class ZooKeeperCommandClient implements ZooKeeperServerClient {
 
     private final RestTemplate restTemplate;
 
@@ -16,17 +18,20 @@ class ZooKeeperCommandClient {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    boolean ruok(String host, int port) {
+    public Peer.Status ruok(Peer peer) {
+        String host = peer.getPeerHost();
+        int port = 8080; // TODO work out this port from ZK config?
+
         String uri = String.format("http://%s:%s/commands/ruok", host, port);
         log.debug("{} ruok...", uri);
         try {
             RuokResponse response = restTemplate.getForObject(uri, RuokResponse.class);
             boolean ok = response != null;
             log.debug("{} ruok {}", uri, ok ? "imok" : "fail");
-            return ok;
+            return ok ? Peer.Status.OK : Peer.Status.UNREACHABLE;
         } catch (RestClientException e) {
             log.debug(uri + " ruok fail", e);
-            return false;
+            return Peer.Status.UNREACHABLE;
         }
     }
 

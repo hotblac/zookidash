@@ -11,11 +11,11 @@ import java.util.List;
 public class EnsembleStatus {
 
     private final ZooKeeperApiClient zkApi;
-    private final ZooKeeperCommandClient zkCommand;
+    private final ZooKeeperServerClient zkServer;
 
-    public EnsembleStatus(ZooKeeperApiClient zkApi, ZooKeeperCommandClient zkCommand) {
+    public EnsembleStatus(ZooKeeperApiClient zkApi, ZooKeeperServerClient zkServer) {
         this.zkApi = zkApi;
-        this.zkCommand = zkCommand;
+        this.zkServer = zkServer;
     }
 
     public List<Peer> checkStatus(String connectionString) throws IOException, InterruptedException, KeeperException {
@@ -24,8 +24,8 @@ public class EnsembleStatus {
 
         List<Peer> peers = zkApi.getConfig(conn);
         for (Peer peer : peers) {
-            boolean ok = zkCommand.ruok(peer.getPeerHost(), 8080); // TODO work out this port from ZK config?
-            peer.setStatus(ok ? Peer.Status.OK : Peer.Status.UNREACHABLE);
+            Peer.Status status = zkServer.ruok(peer);
+            peer.setStatus(status);
         }
         return peers;
     }
