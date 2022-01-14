@@ -1,21 +1,20 @@
 package org.dontpanic.zookidash.zk;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientException;
 
 @Component
 @Profile("!4lw")
 @Slf4j
 class ZooKeeperCommandClient implements ZooKeeperServerClient {
 
-    private final RestTemplate restTemplate;
+    private final WebClient webClient;
 
-    ZooKeeperCommandClient(RestTemplateBuilder restTemplateBuilder) {
-        this.restTemplate = restTemplateBuilder.build();
+    ZooKeeperCommandClient(WebClient webClient) {
+        this.webClient = webClient;
     }
 
     public Peer.Status ruok(Peer peer) {
@@ -25,11 +24,16 @@ class ZooKeeperCommandClient implements ZooKeeperServerClient {
         String uri = String.format("http://%s:%s/commands/ruok", host, port);
         log.debug("{} ruok...", uri);
         try {
-            RuokResponse response = restTemplate.getForObject(uri, RuokResponse.class);
+            RuokResponse response = webClient
+                    .get()
+                    .uri(uri)
+                    .retrieve()
+                    .bodyToMono(RuokResponse.class)
+                    .block();
             boolean ok = response != null;
             log.debug("{} ruok {}", uri, ok ? "imok" : "fail");
             return ok ? Peer.Status.OK : Peer.Status.UNREACHABLE;
-        } catch (RestClientException e) {
+        } catch (WebClientException e) {
             log.debug(uri + " ruok fail", e);
             return Peer.Status.UNREACHABLE;
         }
